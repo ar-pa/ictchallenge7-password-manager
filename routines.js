@@ -1,4 +1,9 @@
-async function updatePasswords(passwords_json) {
+/**
+ * Updates the passwords for the current user.
+ * @param passwords dictionary of passwords
+ * @returns {Promise<void>}
+ */
+async function updatePasswords(passwords) {
     let username;
     let password;
     try {
@@ -8,11 +13,11 @@ async function updatePasswords(passwords_json) {
         throw "Login first";
     }
 
-    console.log(passwords_json)
+    console.log(passwords)
 
-    passwords_json['master_password'] = CryptoJS.SHA256(password).toString();
-    for (let x in passwords_json)
-        passwords_json[x][1] = CryptoJS.AES.encrypt(passwords_json[x][1], password).toString();
+    passwords['master_password'] = CryptoJS.SHA256(password).toString();
+    for (let x in passwords)
+        passwords[x][1] = CryptoJS.AES.encrypt(passwords[x][1], password).toString();
 
     const myHeaders = new Headers();
     myHeaders.append("X-API-KEY", (await chrome.storage.sync.get('apiKey')).apiKey);
@@ -21,13 +26,20 @@ async function updatePasswords(passwords_json) {
     const requestOptions = {
         method: 'PUT',
         headers: myHeaders,
-        body: JSON.stringify(passwords_json),
+        body: JSON.stringify(passwords),
         redirect: 'follow'
     };
     const url = (await chrome.storage.sync.get('publicURL')).publicURL + username + '.json';
     await fetch(url, requestOptions);
 }
 
+/**
+ * Checks if user is available and password is correct, then returns the decrypted password list of the user.
+ * @throws "Login first" if user is not logged in
+ * @throws "No such user" if user is not found
+ * @throws "Wrong password"
+ * @returns {Promise<*>}
+ */
 async function getPasswords() {
     let username, password;
     try {
