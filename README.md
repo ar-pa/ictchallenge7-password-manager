@@ -2,7 +2,7 @@
 Simple Chrome extension to manage passwords. 
 
 ## Key features
-* Uses AES encryption for storing passwords in the object store.
+* Uses CryptoJS AES encryption for storing passwords in the object store.
 * Master Password is kept in the client-side and SHA256 hashsum is kept in the object store.
 
 ## Usage
