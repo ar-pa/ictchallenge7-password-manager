@@ -1,6 +1,7 @@
 /**
  * Updates the passwords for the current user.
  * @param passwords dictionary of passwords
+ * @throws "Login first" if user is not logged in
  * @returns {Promise<void>}
  */
 async function updatePasswords(passwords) {
